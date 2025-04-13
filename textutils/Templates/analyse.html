@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Text Utils</title><link rel="stylesheet" href="{% static 'css/style.css' %}"><script src="{% static 'js/script.js' %}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Black Navbar */
+        .container-fluid {
+            background-color:white;
+            
+            border:405px;
+        }
+        body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color:;
+       background-image:linear-gradient(#FFFAFA,#FFFAFA);
+        margin: 0;
+        padding: 0;
+        }
+        .navbar-brand, .nav-link {
+            color: #1e3c72 !important;
+        }
+        .navbar-toggler {
+            border-color: white;
+        }
+	.text{
+		border-color: blue;}
+        
+        
+        .typec {
+        font-size: 24px;
+        font-weight: bold;
+        overflow: hidden;
+        white-space: nowrap;
+        border-right: 2px solid white;
+        width: 30;
+        animation: typing 3s steps(30, end) forwards, blink 0.7s infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent }
+        }
+
+        /* Auto-Disappear Copy Message */
+        .copy-message {
+            position: fixed;
+            bottom: 400px;
+            right: 150px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .navbar {
+        background-color: white !important;
+        border-bottom: 1px solid #ddd;
+        }
+        .navbar-brand {
+        display: flex;
+        align-items: center;
+        color: blue !important;
+        font-weight: bold;
+        font-size: 1.5rem;
+        }
+        .navbar-brand img { max-height: 45px; width: auto; margin-right: 10px; }
+        .navbar-brand h1 { color:#1e3c72 ; font-size: 21.5px; margin: 0; }
+        
+        .nav-link {
+        color: blue !important;
+        font-weight: 500;
+        margin: 0 10px;
+        transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+        color: black !important;
+        }
+        .container mt-4 button{
+     
+        margin: 10px;
+        color:black;
+        padding:10px;
+        width:100%;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;}
+        .text2,.text3{
+        color:blue;
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            textarea {
+                font-size: 14px;
+                width: 100%;
+                border-color:green;
+                border: 5px solid blue ;
+            }
+            .btn {
+                font-size: 14px;
+                padding: 8px;
+                margin:10px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Black Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+    <a class="navbar-brand mx-auto" href="#">
+    <img src="/storage/emulated/0/Pictures/Picsart/Picsart_25-04-13_07-57-21-746.jpg" alt="" class="img-fluid">
+    <h1>21K.TextUtils</h1>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav me-auto">
+    <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">How to Use?</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Explore More Tools</a></li>
+    </ul>
+    <form class="d-flex">
+    {% csrf_token %}
+    <input class="form-control me-2" type="search" placeholder="Search here..." required>
+    <button class="btn btn-outline-primary" type="submit">Search</button>
+    </form>
+    </div>
+    </div>
+    </nav>
+    <!-- Typewriter Effect -->
+    <div class="container text-center mt-4">
+        <h1 style="color:#1e3c72";>Welcome to Text Utils</h1>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <form action='/analysetext' method='post'>
+                <div class="text3">
+                <h4>Enter the text :</h4></div>
+                    {% csrf_token %}
+                    <textarea name="text" id="text" rows="5" class="form-control" placeholder="Enter the text to perform below operations..." class="typec" required>{{ original_text }}</textarea><br>
+                    <div class="text2">
+                    <h4>Output Text:</h4></div>
+                    <textarea rows="5" id="text-area" class="form-control" placeholder="Analysed text appears here..." readonly>{{ analysed_text }}</textarea><br>
+                      <button type="submit" name="action" value="clear" class="btn btn-danger">Clear</button>
+                  <button type="button" id="copy-btn" class="btn btn-success">Copy</button>
+         
+                    <button type="submit" name="action" value="removepunc" class="btn btn-primary">Remove Punctuation</button>
+                    <button type="submit" name="action" value="upper" class="btn btn-primary">Uppercase</button>
+                    <button type="submit" name="action" value="lower" class="btn btn-primary">Lowercase</button>
+                    <button type="submit" name="action" value="spaces" class="btn btn-primary">Remove Spaces</button>
+                    <button type="submit" name="action" value="title" class="btn btn-primary">Title Case</button>
+                    
+                           </form>
+            </div>
+  
+    </div>
+
+    <!-- JavaScript for Copy Message -->
+    <script>
+        document.getElementById('copy-btn').addEventListener('click', function() {
+            const textArea = document.getElementById('text-area');
+            textArea.select();
+            navigator.clipboard.writeText(textArea.value);
+
+            // Show copy message
+            let message = document.createElement('div');
+            message.innerText = '✓ copied';
+            message.className = 'copy-message';
+            document.body.appendChild(message);
+
+            // Remove message after 2 seconds
+            setTimeout(() => {
+                message.remove();
+            }, 2000);
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
